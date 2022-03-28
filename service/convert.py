@@ -35,7 +35,7 @@ async def convert_BGC(number_college: int):
 
     exported_task_id = data.get('tasks')[2].get('id')
     print('Tasks start')
-    await asyncio.sleep(5)  # Add async  func, put all the tasks in the queue
+    await asyncio.sleep(10)  # Add async  func, put all the tasks in the queue
     res = cloudconvert.Task.wait(id=exported_task_id)  # Wait for job completion
     file = res.get("result").get("files")[0]
     filename = file['filename']
