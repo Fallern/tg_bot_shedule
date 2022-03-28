@@ -9,7 +9,7 @@ cloudconvert.configure(api_key=CLOUDCONVERT_TOKEN,
 
 
 # создание работы для конвертации одного формата в другой с использование API и преобразуем полученный код с сайта
-def convert_BGC(number_college):
+async def convert_BGC(number_college):
     filename = f'zamena{number_college}k.xlsx'
     path = f'sheduleXLSX/{filename}'
     data = cloudconvert.Job.create(payload={
@@ -34,6 +34,8 @@ def convert_BGC(number_college):
     task = cloudconvert.Task.upload(file_name=path, task=upload_task)
 
     exported_task_id = data.get('tasks')[2].get('id')
+    print('Tasks start')
+    await asyncio.sleep(5)  # Add async  func, put all the tasks in the queue
     res = cloudconvert.Task.wait(id=exported_task_id)  # Wait for job completion
     file = res.get("result").get("files")[0]
     filename = file['filename']
