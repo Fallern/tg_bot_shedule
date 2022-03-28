@@ -4,4 +4,5 @@ __pycache__
 .idea
 *.xlsx
 *.jpg
+*.png
 test_func.py
