@@ -1,4 +1,4 @@
-import config
+from data import config
 import psycopg2
 from psycopg2 import extras
 from service import create_img_shedule_each_group
@@ -45,4 +45,4 @@ def save_img_groups_to_file(url: str, college_building: int) -> None:
                 VALUES (%s, %s, %s)
                 ON CONFLICT (name) DO NOTHING
                 """, (name, url, college_building,))
-            img_shedule.save(f"group_img/{name}.jpg")
+            img_shedule.save(f"../group_img/{name}.jpg")

@@ -6,7 +6,7 @@ def create_img_shedule_each_group(url: str, college_building: int) -> list[dict[
     """Create list img - objects for further processing them"""
     groups_img_list = []
     font = ImageFont.truetype("arial.ttf", size=20)
-    groups = split_group(url)
+    groups = split_group(url)  # path to Excel  file
     for group in groups:
         count_row = len(group) - 1
         img = Image.new('L', (350, 35 * count_row), 'white')

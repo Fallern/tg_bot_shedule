@@ -1,8 +1,7 @@
 import os
 import cloudconvert
-import urllib.request
 import asyncio
-from config import CLOUDCONVERT_TOKEN, TOKEN
+from data.config import CLOUDCONVERT_TOKEN
 
 cloudconvert.configure(api_key=CLOUDCONVERT_TOKEN,
                        sandbox=True)
