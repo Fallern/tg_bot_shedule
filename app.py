@@ -1,22 +1,16 @@
-from aiogram import Bot, Dispatcher, executor, types
-import logging
-import config
+from aiogram import executor
 
-logging.basicConfig(level=logging.INFO)
-
-bot = Bot(token=config.API_TOKEN)
-dp = Dispatcher(bot)
+import handlers
+from loader import dp
+from utils.notify_admins import on_startup_notify
+from utils.set_bot_commands import set_default_commands
 
 
-@dp.message_handler(commands=['start', 'help'])
-async def send_welcome(message: types.Message):
-    await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
+async def on_startup(dispatcher):
+    await on_startup_notify(dispatcher)
 
-
-@dp.message_handler()
-async def echo(message: types.Message):
-    await message.reply("ку")
+    await set_default_commands(dispatcher)
 
 
 if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=True)
+    executor.start_polling(dp, on_startup=on_startup)
