@@ -6,6 +6,7 @@ from datetime import datetime
 import requests
 import convert
 from pytz import timezone
+from db import save_img_groups_to_file
 
 TIME_ZONE = timezone("Asia/Krasnoyarsk")
 
@@ -21,6 +22,7 @@ def load_on_start_all_files_xlsx():
             file_xlsx.write(file.content)
         timetable_old_size[f'timetable_old_size{college_number}'] = os.path.getsize(
             f'../sheduleXLSX/zamena{college_number}k.xlsx')
+        save_img_groups_to_file(f'../sheduleXLSX/zamena{college_number}k.xlsx', college_number)
 
 
 def load_on_start_all_files():
@@ -44,6 +46,7 @@ def comparison_size_bgc(college_number: int, timetable_size: dict) -> None:
         file = requests.get(url)
         with open(f'../sheduleXLSX/zamena{college_number}k.xlsx', 'wb') as file_xlsx:
             file_xlsx.write(file.content)
+        save_img_groups_to_file(f'../sheduleXLSX/zamena{college_number}k.xlsx', college_number)
         convert.start_load_file_png(college_number)
 
 
