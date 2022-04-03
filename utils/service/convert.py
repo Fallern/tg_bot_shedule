@@ -1,16 +1,18 @@
 import os
-import cloudconvert
 import asyncio
-from data.config import CLOUDCONVERT_TOKEN
 
-cloudconvert.configure(api_key=CLOUDCONVERT_TOKEN,
-                       sandbox=True)
+import cloudconvert
+
+from data.config import TOKEN
+
+cloudconvert.configure(api_key=TOKEN,
+                       sandbox=False)
 
 
 # создание работы для конвертации одного формата в другой с использование API и преобразуем полученный код с сайта
 async def convert_BGC(number_college: int):
     filename = f'zamena{number_college}k.xlsx'
-    path = f'../sheduleXLSX/{filename}'
+    path = f'media/sheduleXLSX/{filename}'
     data = cloudconvert.Job.create(payload={
         "tasks": {
             'upload_shedule_xlsx': {
@@ -40,21 +42,10 @@ async def convert_BGC(number_college: int):
     filename = file['filename']
     file_url = file['url']
     cloudconvert.download(filename=filename, url=file_url)
-    os.replace(filename, f'../college_building_img/download_zamena{number_college}.png')
+    os.replace(filename, f'media/college_building_img/download_zamena{number_college}.png')
 
 
-def start_load_file_png(number_college) -> None:
-    asyncio.run(convert_BGC(number_college))
-
-
-def start_load_all_files_png() -> None:
-    async def _start_load_all_files_png():
-        await asyncio.gather(
-            *[convert_BGC(i) for i in range(1, 5)]
-        )
-
-    asyncio.run(_start_load_all_files_png())
-
-
-if __name__ == '__main__':
-    pass
+async def start_load_all_files_png():
+    await asyncio.gather(
+        *[convert_BGC(i) for i in range(1, 5)]
+    )
