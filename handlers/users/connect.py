@@ -3,7 +3,7 @@ from loader import dp
 from keyboards.default.keyboard_menu import kb_menu
 
 
-@dp.message_handler(text='/start')
+@dp.message_handler(commands=['start'])
 async def command_start(message: types.Message):
     sticker = 'CAACAgIAAxkBAAEEVBdiRY_oY-7Vds-Fr1TzW8TIv1x2xwACFgADrscyCt5fUMuqSVWmIwQ'
     await message.answer_sticker(sticker=sticker)
