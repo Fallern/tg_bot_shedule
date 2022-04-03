@@ -1,4 +1,4 @@
-from service_parse import split_group
+from .service_parse import split_group
 from PIL import Image, ImageDraw, ImageFont
 
 
