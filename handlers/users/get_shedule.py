@@ -1,32 +1,35 @@
 from aiogram import types
-from loader import dp
-import database
+from loader import dp, redis_client
 
 
 async def get_shedule_(message: types.Message, number_college: int):
-    # path_file = f"media/college_building_img/download_zamena{number_college}.png"
-    file_id = 'AgACAgIAAxkDAANlYkfjLCyQIp1-Usb-m6DxwaW4AtcAAjC3MRt0RUBKjnFi5ZWvO90BAAMCAAN3AAMjBA'
-    # await message.delete()
-    # file = types.InputFile(path_file)
-    await message.answer_photo(photo=file_id, caption=f"Расписание {number_college} корпуса")
+    id_file = redis_client.hget("id_colleges_img", f"college_{number_college}")
+    print(id_file)
+    if id_file is None:
+        path_file = f"media/college_building_img/download_zamena{number_college}.png"
+        file = types.InputFile(path_file)
+        id_photo = await message.answer_photo(photo=file, caption=f"Расписание {number_college} корпуса")
+        redis_client.hset("id_colleges_img", f"college_{number_college}", id_photo.photo[-1].file_id)
+    else:
+        await message.answer_photo(photo=id_file, caption=f"Расписание {number_college} корпуса")
 
 
-@dp.message_handler(commands=['get1'])
+@dp.message_handler(commands=['get_1'])
 async def get_shedule_1(message: types.Message):
     await get_shedule_(message, 1)
 
 
-@dp.message_handler(commands=['get2'])
+@dp.message_handler(commands=['get_2'])
 async def get_shedule_1(message: types.Message):
     await get_shedule_(message, 2)
 
 
-@dp.message_handler(commands=['get3'])
+@dp.message_handler(commands=['get_3'])
 async def get_shedule_1(message: types.Message):
     await get_shedule_(message, 3)
 
 
-@dp.message_handler(commands=['get4'])
+@dp.message_handler(commands=['get_4'])
 async def get_shedule_1(message: types.Message):
     await get_shedule_(message, 4)
 
