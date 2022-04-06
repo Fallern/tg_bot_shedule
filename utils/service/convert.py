@@ -1,9 +1,11 @@
+import logging
 import os
 import asyncio
 
 import cloudconvert
 
 from data.config import TOKEN
+from loader import redis_client
 
 cloudconvert.configure(api_key=TOKEN,
                        sandbox=False)
@@ -46,6 +48,8 @@ async def convert_BGC(number_college: int):
 
 
 async def start_load_all_files_png():
+    redis_client.delete("id_colleges_img")
+    logging.info(f'delete key (id_colleges_img)')
     await asyncio.gather(
         *[convert_BGC(i) for i in range(1, 5)]
     )

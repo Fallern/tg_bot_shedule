@@ -41,6 +41,7 @@ async def comparison_size_bgc(college_number: int, timetable_size: dict) -> None
             file_xlsx.write(file.content)
         await save_img_groups_to_file(f'media/sheduleXLSX/zamena{college_number}k.xlsx', college_number)
         await convert_BGC(college_number)
+        redis_client.hdel("id_colleges_img", f"college_{college_number}")
 
 
 async def check_shedule():
