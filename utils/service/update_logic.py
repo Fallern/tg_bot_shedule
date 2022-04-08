@@ -1,14 +1,21 @@
+import logging
 import os.path
 import time
 import urllib.request
 import datetime
 from datetime import datetime
+
+import aiogram
 import requests
-import logging
 from pytz import timezone
+
+from aiogram import types
+from aiogram.utils.exceptions import ChatNotFound
 
 from .convert import *
 from .db import save_img_groups_to_file
+from loader import dp
+from database import models
 
 TIME_ZONE = timezone("Asia/Krasnoyarsk")
 
@@ -28,6 +35,33 @@ async def load_on_start_all_files_xlsx():
         await save_img_groups_to_file(f'media/sheduleXLSX/zamena{college_number}k.xlsx', college_number)
 
 
+async def shedule_mailing(college_building: int):
+    users = await models.UserTg.filter(college_building=college_building)
+    for user in users:
+        group = await user.group
+        try:
+            if group is None:
+                id_file = redis_client.hget("id_colleges_img", f"college_{user.college_building}")
+                if id_file is None:
+                    path_file = f"media/college_building_img/download_zamena{user.college_building}.png"
+                    file = types.InputFile(path_file)
+                    id_photo = await dp.bot.send_photo(chat_id=user.id,
+                                                       photo=file)
+                    redis_client.hset("id_colleges_img", f"college_{user.college_building}",
+                                      id_photo.photo[-1].file_id,
+                                      caption=f"Расписание {user.college_building} корпуса")
+                else:
+                    await dp.bot.send_photo(chat_id=user.id, photo=id_file,
+                                            caption=f"Расписание {user.college_building} корпуса")
+            else:
+                file = types.InputFile(group.url)
+                await dp.bot.send_photo(chat_id=user.id, photo=file)
+        except ChatNotFound as err:
+            logging.info(f"{user.name} not available")
+            await user.delete()
+            logging.info(f"{user.name} id: {user.id} DELETE")
+
+
 async def comparison_size_bgc(college_number: int, timetable_size: dict) -> None:
     """Проверяем размер исходного(старого файла с расписанием)
      с новым, если они не равны - отсылаем запрос"""
@@ -42,6 +76,7 @@ async def comparison_size_bgc(college_number: int, timetable_size: dict) -> None
         await save_img_groups_to_file(f'media/sheduleXLSX/zamena{college_number}k.xlsx', college_number)
         await convert_BGC(college_number)
         redis_client.hdel("id_colleges_img", f"college_{college_number}")
+        await shedule_mailing(college_number)
 
 
 async def check_shedule():
