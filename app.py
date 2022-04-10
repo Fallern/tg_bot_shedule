@@ -4,7 +4,7 @@ import asyncio
 from aiogram import executor
 
 import handlers
-from database import connect, models
+from database import connect
 from loader import dp
 from utils.service import convert
 
