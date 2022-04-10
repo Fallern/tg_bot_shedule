@@ -8,6 +8,12 @@ DB_PORT = os.environ['PORT']
 DB_HOST = os.environ['HOST']
 DB_USER = os.environ['USER']
 DB_PASSWORD = os.environ['PASSWORD']
+
+REDIS_PORT = os.environ['REDIS_PORT']
+REDIS_HOST = os.environ['REDIS_HOST']
+REDIS_DB = os.environ['REDIS_DB']
+REDIS_PASSWORD = None  # os.environ['REDIS_PASSWORD']
+
 API_TOKEN_TELEGRAM = os.environ['API_TOKEN']
 CLOUDCONVERT_TOKEN = os.environ['CLOUDCONVERT_TOKEN']
 TOKEN = os.environ['TOKEN']
